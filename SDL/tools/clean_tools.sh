@@ -9,15 +9,14 @@ fi
 SDL_SRC_HOME="${DEV_HOME}/tools/SDL2-2.0.5"
 #echo "$SDL_SRC_HOME"
 
-function build_tool_sdl() {
-    echo "building sdl...."
-    tar xzvf ${DEV_HOME}/tools/SDL2-2.0.5.tar.gz -C ${DEV_HOME}/tools
-    cd $SDL_SRC_HOME ; ./configure ; make all ; make install
-    echo "finished building...."
+function clean_tool_sdl() {
+    echo "clean up sdl...."
+        rm -rf ${SDL_SRC_HOME}
+    echo "finished cleaning...."
 }
 
-function build_tool() {
-    build_tool_sdl
+function clean_tool() {
+    clean_tool_sdl
 }
 
 build_tool
