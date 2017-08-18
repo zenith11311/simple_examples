@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+    echo "usage : . $0 [DEV_HOME] ..." 
+else
+
+export DEV_HOME=$1
+
+if [ $# -eq 2 ]; then
+    export DEV_SID=$2
+fi
+
+echo "Developement Environment Configured"
+echo "DEV_HOME : ${DEV_HOME}"
+echo "DEV_SID  : ${DEV_SID}"
+
+fi
