@@ -97,6 +97,7 @@ sdl_close()
 int
 main(int argc, char *args[])
 {
+    int  quit = false;          // main loop flag
     char path[256] = {0x00, };             // path for input media
 
     SDL_Event e;                // SDL Event handler
@@ -125,8 +126,14 @@ main(int argc, char *args[])
     /* Update the surface */
     SDL_UpdateWindowSurface(window_g);
 
-    /* wait 2s */
-    SDL_Delay(2000);
+    /* Application Loop */
+    while(!quit) {
+        while(SDL_PollEvent(&e) != 0) {
+            /* User requests quit */
+            if(e.type == SDL_QUIT)
+                quit = true;
+        }
+    }
 
     /* Free resources and close SDL */
     sdl_close();
