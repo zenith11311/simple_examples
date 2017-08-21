@@ -1,3 +1,3 @@
 #!/bin/bash
 
-g++ -o $1 $1.c  -lSDL
+g++ -o $1 $1.c -I$DEV_HOME/tools/include -lSDL2

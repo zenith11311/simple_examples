@@ -1,0 +1,3 @@
+should download SDL with apt-get...
+
+$ sudo apt-get install libsdl2-*
