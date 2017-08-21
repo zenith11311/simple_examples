@@ -1,6 +1,6 @@
 /**
  * @ File      : test.c
- * @ Brief     : Loading the image
+ * @ Brief     : Stretching out loaded image
  *
  * @ Author    : caelum
  * @ Purpose   : for SDL library practice...
@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define WINDOW_WIDTH  320
-#define WINDOW_HEIGHT 480
+#define STRETCHED_WIDTH  640
+#define STRETCHED_HEIGHT 480
 
 #define TRUE  1
 #define FALSE 0
@@ -36,7 +36,7 @@ SDL_Window* window_g = NULL;
 SDL_Surface* screen_surface_g = NULL;
 
 /* Current displayed image */
-SDL_Surface* loaded_surface_g = NULL;
+SDL_Surface* stretched_surface_g = NULL;
 
 /* sdl_initialize function */
 int 
@@ -52,8 +52,8 @@ sdl_init()
         window_g = SDL_CreateWindow("SDL Tutorial", 
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    WINDOW_WIDTH,
-                                    WINDOW_HEIGHT,
+                                    STRETCHED_WIDTH,
+                                    STRETCHED_HEIGHT,
                                     SDL_WINDOW_SHOWN);
         if(window_g == NULL) {
             printf("[%s:%d]\tFailed to create window...\n", __FILE__, __LINE__);
@@ -69,11 +69,10 @@ sdl_init()
 int
 sdl_load_media(char *filepath) 
 {
-    loaded_surface_g = SDL_LoadBMP(filepath); // Load image at specified path 
-
-    if(loaded_surface_g == NULL) {
-        printf("[%s:%d]\tFailed to load image %s...\n", __FILE__, __LINE__, filepath);
-        printf("\t\tSDL Error : %s\n", SDL_GetError());
+    stretched_surface_g = sdl_load_surface(filepath);
+    if(stretched_surface_g == NULL) {
+        printf("[%s:%d]\tFailed to load streched image...\n", __FILE__, __LINE__);
+//        printf("\t\tSDL Error : %s\n", SDL_GetError());
         return FALSE;
     }
     return TRUE;
@@ -83,8 +82,8 @@ void
 sdl_close()
 {
     /* Free loaded image */
-    SDL_FreeSurface(loaded_surface_g);
-    loaded_surface_g = NULL;
+    SDL_FreeSurface(stretched_surface_g);
+    stretched_surface_g = NULL;
 
     /* Destroy Window */
     SDL_DestroyWindow(window_g);
@@ -92,6 +91,32 @@ sdl_close()
 
     /* Quit SDL Subsystems */
     SDL_Quit();
+}
+
+SDL_Surface*
+sdl_load_surface(char *path)
+{
+    SDL_Surface* optimized_surface = NULL; // Final Optimized image
+    SDL_Surface* loaded_surface = SDL_LoadBMP(path); // Load image at specified path 
+
+    if(loaded_surface == NULL) {
+        printf("[%s:%d]\tFailed to load image %s...\n", __FILE__, __LINE__, path);
+        printf("\t\tSDL Error : %s\n", SDL_GetError());
+        return NULL;
+    } else {
+        /* Convert surface to screen format */
+        optimized_surface = SDL_ConvertSurface(loaded_surface, screen_surface_g->format, 0);
+        if(optimized_surface == NULL) {
+            printf("[%s:%d]\tFailed to optimize image %s...\n", __FILE__, __LINE__, path);
+            printf("\t\tSDL Error : %s\n", SDL_GetError());
+            return NULL;
+        }
+        /* free loaded surface */
+        SDL_FreeSurface(loaded_surface);
+    }
+
+    return optimized_surface;
+
 }
 
 int
@@ -120,14 +145,26 @@ main(int argc, char *args[])
         return FALSE;
     }
 
-    /* Apply the image */
-    SDL_BlitSurface(loaded_surface_g, NULL, screen_surface_g, NULL);
+    /* application loop */
+    while(!quit) {
+        /* Handle events on the queue */
+        while(SDL_PollEvent(&e) != 0) {
+            /* Check event for quit request  */
+            if(e.type == SDL_QUIT)
+                quit = true;
+        }
 
-    /* Update the surface */
-    SDL_UpdateWindowSurface(window_g);
+        /* Apply the stretched image */
+        stretched_screen.x = 0;
+        stretched_screen.y = 0;
+        stretched_screen.w = STRETCHED_WIDTH;
+        stretched_screen.h = STRETCHED_HEIGHT;
+        SDL_BlitScaled( stretched_surface_g, NULL, screen_surface_g, &stretched_screen );
 
-    /* wait 2s */
-    SDL_Delay(2000);
+        /* Update the surface */
+        SDL_UpdateWindowSurface( window_g );
+
+    }
 
     /* Free resources and close SDL */
     sdl_close();
