@@ -1,6 +1,6 @@
 /**
  * @ File      : test.c
- * @ Brief     : Loading the image
+ * @ Brief     : Event Driven Programming
  *
  * @ Author    : caelum
  * @ Purpose   : for SDL library practice...
