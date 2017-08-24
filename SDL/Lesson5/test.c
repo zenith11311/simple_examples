@@ -7,7 +7,7 @@
  * @ Reference : Original code was from Lazy Foo' Productions (2004-2015)
  **/
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <string.h>
 
