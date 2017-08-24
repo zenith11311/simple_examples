@@ -1,3 +1,6 @@
 should download SDL with apt-get...
 
 $ sudo apt-get install libsdl2-*
+
+SDL2 lib files are located in /usr/lib/x86_64-linux-gnu/libSDL2_*.so
+SDL2 header files are located in /usr/include/SDL2/*
